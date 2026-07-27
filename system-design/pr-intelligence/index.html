@@ -106,18 +106,99 @@
           <p class="eyebrow">Architecture Diagram</p>
           <h2>Webhook ingestion through analysis workers to review storage.</h2>
         </div>
-        <div class="case-diagram">
-          <div class="case-row">
-            <span>GitHub Webhook</span><i></i><span>API Gateway</span><i></i><span>Webhook Intake Service</span><i></i><span>Kafka Review Queue</span>
+        <div class="mermaid-shell">
+          <div class="mermaid mermaid-diagram">
+flowchart TB
+    GitHub["GitHub Webhook"] --> Gateway["API Gateway"]
+    Gateway --> Intake["Webhook Intake Service"]
+    Intake --> Kafka["Kafka Review Queue"]
+
+    subgraph Workers["Analysis Layer"]
+        Static["Static Analysis Workers"]
+        Policy["Policy Engine"]
+        Model["AI / Model Service"]
+    end
+
+    Kafka --> Static
+    Kafka --> Policy
+    Kafka --> Model
+
+    subgraph Storage["Storage and Delivery"]
+        ReviewStore[("Review Storage")]
+        RateLimit[("Rate Limit Store")]
+        Notify["Notification Service"]
+    end
+
+    Static --> ReviewStore
+    Policy --> ReviewStore
+    Model --> ReviewStore
+    Gateway --> RateLimit
+    ReviewStore --> Notify
+
+    subgraph Recovery["Recovery and Observability"]
+        Retry["Retry Topics"]
+        DLQ["Dead-Letter Queue"]
+        Metrics["Metrics / Traces / Logs"]
+    end
+
+    Static -. transient failure .-> Retry
+    Policy -. transient failure .-> Retry
+    Model -. poison event .-> DLQ
+    Intake --> Metrics
+    Static --> Metrics
+    Model --> Metrics
           </div>
-          <div class="case-row">
-            <span>Static Analysis Workers</span><i></i><span>Policy Engine</span><i></i><span>AI / Model Service</span>
+          <div class="flow-strip">
+            <span>Ingress Flow: GitHub -> API Gateway -> Intake Service -> Kafka</span>
+            <span>Analysis Flow: Kafka -> Static / Policy / AI Workers -> Review Storage</span>
+            <span>Recovery Flow: Failures -> Retry Topics -> DLQ with observable review state</span>
           </div>
-          <div class="case-row">
-            <span>Review Storage</span><i></i><span>Rate Limit Store</span><i></i><span>Notification Service</span>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Cloud-Native Deployment Architecture</p>
+          <h2>How the review platform runs across compute, messaging, persistence, and monitoring.</h2>
+        </div>
+        <div class="mermaid-shell">
+          <div class="mermaid mermaid-diagram">
+flowchart LR
+    Webhook["GitHub Webhooks"] --> Ingress["Ingress / Load Balancer"]
+    Ingress --> K8s
+
+    subgraph K8s["Kubernetes Cluster"]
+        ApiPods["API Pods"]
+        IntakePods["Intake Pods"]
+        WorkerPods["Analysis Worker Pods"]
+        ModelPods["Model Adapter Pods"]
+    end
+
+    ApiPods --> IntakePods
+    IntakePods --> WorkerPods
+    WorkerPods --> ModelPods
+
+    subgraph Platform["Platform Dependencies"]
+        Kafka[("Apache Kafka")]
+        Postgres[("PostgreSQL")]
+        Redis[("Redis")]
+        Prom["Prometheus"]
+        Graf["Grafana"]
+    end
+
+    IntakePods --> Kafka
+    WorkerPods --> Kafka
+    WorkerPods --> Postgres
+    ApiPods --> Postgres
+    ApiPods --> Redis
+    WorkerPods --> Prom
+    ModelPods --> Prom
+    Prom --> Graf
           </div>
-          <div class="case-row">
-            <span>Retry Topics</span><i></i><span>Dead-Letter Queue</span><i></i><span>Metrics / Traces / Logs</span>
+          <div class="flow-strip">
+            <span>Scale Unit: API, intake, worker, and model adapter pods scale independently</span>
+            <span>Durability: Kafka and PostgreSQL preserve review events and findings</span>
+            <span>Monitoring: queue lag, worker latency, and model errors surface through Prometheus and Grafana</span>
           </div>
         </div>
       </section>
@@ -182,5 +263,23 @@
         <a href="../../index.html#system-design-library">Back to Library</a>
       </footer>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <script>
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: "base",
+        securityLevel: "loose",
+        themeVariables: {
+          background: "#0c121d",
+          primaryColor: "#191f2e",
+          primaryTextColor: "#eff4ff",
+          primaryBorderColor: "#8ea0c9",
+          lineColor: "#b6c4e2",
+          secondaryColor: "#141b28",
+          tertiaryColor: "#101722",
+          fontFamily: "\"IBM Plex Mono\", monospace"
+        }
+      });
+    </script>
   </body>
 </html>

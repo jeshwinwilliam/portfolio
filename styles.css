@@ -652,6 +652,29 @@ pre {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
 }
 
+.mermaid-shell {
+  display: grid;
+  gap: 18px;
+  padding: 26px;
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01)),
+    rgba(7, 11, 24, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  overflow: auto;
+}
+
+.mermaid-diagram {
+  min-width: 880px;
+  padding: 8px 0;
+}
+
+.mermaid-diagram svg {
+  width: 100%;
+  height: auto;
+}
+
 .architecture-header {
   display: flex;
   justify-content: center;

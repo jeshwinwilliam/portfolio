@@ -106,18 +106,100 @@
           <p class="eyebrow">Architecture Diagram</p>
           <h2>Trade intake through validation, ledger updates, and reconciliation.</h2>
         </div>
-        <div class="case-diagram">
-          <div class="case-row">
-            <span>Trade Sources</span><i></i><span>API Gateway</span><i></i><span>Validation Service</span><i></i><span>Kafka Transaction Topic</span>
+        <div class="mermaid-shell">
+          <div class="mermaid mermaid-diagram">
+flowchart TB
+    Trade["Trade Sources"] --> Gateway["API Gateway"]
+    Gateway --> Validate["Validation Service"]
+    Validate --> Kafka["Kafka Transaction Topic"]
+
+    subgraph Processing["Processing Layer"]
+        Ledger["Ledger Writer"]
+        Recon["Reconciliation Engine"]
+        Dedupe["Duplicate Detector"]
+    end
+
+    Kafka --> Ledger
+    Kafka --> Recon
+    Kafka --> Dedupe
+
+    subgraph Data["Financial Data Layer"]
+        LedgerDB[("PostgreSQL / Oracle Ledger")]
+        Exceptions[("Exception Store")]
+        Ops["Ops Dashboard"]
+    end
+
+    Ledger --> LedgerDB
+    Recon --> LedgerDB
+    Recon --> Exceptions
+    Dedupe --> Exceptions
+    Exceptions --> Ops
+
+    subgraph Recovery["Recovery and Monitoring"]
+        Retry["Retry Topics"]
+        DLQ["Dead-Letter Queue"]
+        Metrics["Metrics / Alerts / Traces"]
+    end
+
+    Ledger -. retryable failure .-> Retry
+    Recon -. unresolved mismatch .-> Retry
+    Dedupe -. poison event .-> DLQ
+    Validate --> Metrics
+    Recon --> Metrics
+    Ledger --> Metrics
           </div>
-          <div class="case-row">
-            <span>Ledger Writer</span><i></i><span>Reconciliation Engine</span><i></i><span>Duplicate Detector</span>
+          <div class="flow-strip">
+            <span>Ingress Flow: Trade Sources -> API Gateway -> Validation -> Kafka</span>
+            <span>Processing Flow: Kafka -> Ledger Writer / Reconciliation / Duplicate Detection</span>
+            <span>Recovery Flow: Exceptions surface to ops while failures isolate into retry and DLQ paths</span>
           </div>
-          <div class="case-row">
-            <span>PostgreSQL / Oracle Ledger</span><i></i><span>Exception Store</span><i></i><span>Ops Dashboard</span>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Cloud-Native Deployment Architecture</p>
+          <h2>How reconciliation services, persistence, and observability run together in production.</h2>
+        </div>
+        <div class="mermaid-shell">
+          <div class="mermaid mermaid-diagram">
+flowchart LR
+    Sources["Trade Sources"] --> Ingress["Ingress / Load Balancer"]
+    Ingress --> K8s
+
+    subgraph K8s["Kubernetes Cluster"]
+        ValidationPods["Validation Pods"]
+        LedgerPods["Ledger Writer Pods"]
+        ReconPods["Reconciliation Pods"]
+        OpsPods["Ops API / Dashboard Pods"]
+    end
+
+    ValidationPods --> LedgerPods
+    ValidationPods --> ReconPods
+    ReconPods --> OpsPods
+
+    subgraph Platform["Platform Dependencies"]
+        Kafka[("Apache Kafka")]
+        Oracle[("Oracle / PostgreSQL")]
+        Redis[("Reference Cache")]
+        Prom["Prometheus"]
+        Graf["Grafana"]
+    end
+
+    ValidationPods --> Kafka
+    LedgerPods --> Kafka
+    ReconPods --> Kafka
+    LedgerPods --> Oracle
+    ReconPods --> Oracle
+    ValidationPods --> Redis
+    LedgerPods --> Prom
+    ReconPods --> Prom
+    Prom --> Graf
           </div>
-          <div class="case-row">
-            <span>Retry Topics</span><i></i><span>DLQ</span><i></i><span>Metrics / Alerts / Traces</span>
+          <div class="flow-strip">
+            <span>Scale Unit: validation, ledger, and reconciliation pods scale by partition and load</span>
+            <span>Persistence: transactional ledger state stays in Oracle / PostgreSQL while Kafka preserves replayability</span>
+            <span>Monitoring: operational breaks, duplicate rates, and write latency flow into dashboards and alerts</span>
           </div>
         </div>
       </section>
@@ -181,5 +263,23 @@
         <a href="../../index.html#system-design-library">Back to Library</a>
       </footer>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <script>
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: "base",
+        securityLevel: "loose",
+        themeVariables: {
+          background: "#0c121d",
+          primaryColor: "#191f2e",
+          primaryTextColor: "#eff4ff",
+          primaryBorderColor: "#8ea0c9",
+          lineColor: "#b6c4e2",
+          secondaryColor: "#141b28",
+          tertiaryColor: "#101722",
+          fontFamily: "\"IBM Plex Mono\", monospace"
+        }
+      });
+    </script>
   </body>
 </html>

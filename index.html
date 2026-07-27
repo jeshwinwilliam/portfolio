@@ -73,7 +73,7 @@
             <p class="panel-label">Selected Proof Points</p>
             <div class="signal-grid">
               <article>
-                <span class="signal-value">3+ yrs</span>
+                <span class="signal-value">4+ yrs</span>
                 <span class="signal-key">software engineering</span>
               </article>
               <article>
@@ -161,89 +161,6 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
             <h3>Databases & Observability</h3>
             <p>PostgreSQL, Oracle, Redis, Prometheus, Grafana, ELK, tracing</p>
           </article>
-        </div>
-      </section>
-
-      <section class="section-shell architecture-section" id="architecture">
-        <div class="section-heading">
-          <p class="eyebrow">Architecture Case Study</p>
-          <h2>Recovery paths, event flow, and failure handling in distributed workloads.</h2>
-        </div>
-        <div class="architecture-board">
-          <div class="board-column">
-            <article class="board-card">
-              <h3>Distributed Event Processing Recovery Workflow</h3>
-              <p>
-                A generalized Kafka-driven recovery pattern based on the event
-                processing platform work: ingestion, fan-out, retry isolation,
-                dead-letter handling, and operational visibility.
-              </p>
-              <div class="diagram">
-                <div class="diagram-row">
-                  <span>Producer APIs</span>
-                  <i></i>
-                  <span>Ingress Service</span>
-                </div>
-                <div class="diagram-row">
-                  <span>Kafka Topics</span>
-                  <i></i>
-                  <span>Consumer Group</span>
-                  <i></i>
-                  <span>Workflow Services</span>
-                </div>
-                <div class="diagram-row">
-                  <span>PostgreSQL</span>
-                  <i></i>
-                  <span>Retry Queue</span>
-                  <i></i>
-                  <span>Dead Letter Queue</span>
-                </div>
-                <div class="diagram-row">
-                  <span>Prometheus</span>
-                  <i></i>
-                  <span>Grafana</span>
-                  <i></i>
-                  <span>ELK Stack</span>
-                </div>
-              </div>
-            </article>
-          </div>
-          <div class="board-column">
-            <article class="board-card deployment-card">
-              <h3>PR Intelligence Platform Review Flow</h3>
-              <p>
-                Event-driven review orchestration from pull-request ingestion
-                through analysis, persistence, and resilient result delivery.
-              </p>
-              <ol class="deploy-flow">
-                <li>
-                  <strong>Ingestion</strong>
-                  Pull request metadata enters a Spring Boot API and is persisted before dispatch.
-                </li>
-                <li>
-                  <strong>Dispatch</strong>
-                  Kafka events trigger asynchronous review jobs without blocking the intake path.
-                </li>
-                <li>
-                  <strong>Analysis</strong>
-                  Rule engines and AI-assisted analyzers produce findings, recommendations, and status changes.
-                </li>
-                <li>
-                  <strong>Resilience</strong>
-                  Failed jobs are retried with status tracking, while review history remains queryable through APIs.
-                </li>
-              </ol>
-              <div class="deploy-visual">
-                <span>PR Webhook</span>
-                <b></b>
-                <span>Review API</span>
-                <b></b>
-                <span>Kafka</span>
-                <b></b>
-                <span>Review Findings</span>
-              </div>
-            </article>
-          </div>
         </div>
       </section>
 
@@ -359,6 +276,9 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
               <li>Payment security use case</li>
               <li>Publication-connected project story</li>
             </ul>
+            <div class="project-actions">
+              <a class="button button-secondary button-small" href="#publication">View Publication</a>
+            </div>
           </article>
         </div>
       </section>
@@ -505,11 +425,11 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
           </article>
           <article class="credential-card">
             <h3>MS in Computer Science</h3>
-            <p>Oklahoma City University, Oklahoma City, Oklahoma, United States.</p>
+            <p>Oklahoma City University, Oklahoma City, Oklahoma, United States. Graduation year: 2026.</p>
           </article>
           <article class="credential-card">
             <h3>B.Tech in Computer Science and Engineering</h3>
-            <p>Hindustan University, building the base for systems, software, and engineering fundamentals.</p>
+            <p>Hindustan University, building the base for systems, software, and engineering fundamentals. Graduation year: 2022.</p>
           </article>
         </div>
       </section>

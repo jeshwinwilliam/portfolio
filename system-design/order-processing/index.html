@@ -106,59 +106,61 @@
           <p class="eyebrow">Architecture Diagram</p>
           <h2>Layered order-processing architecture with service zones and event flow.</h2>
         </div>
-        <div class="architecture-canvas">
-          <div class="architecture-header">
-            <div class="diagram-box diagram-box-client">Client Applications</div>
-          </div>
-          <div class="architecture-grid">
-            <section class="zone-card zone-edge">
-              <span class="zone-title">Edge</span>
-              <div class="zone-stack">
-                <div class="diagram-box">Load Balancer</div>
-                <div class="diagram-box">API Gateway</div>
-              </div>
-            </section>
+        <div class="mermaid-shell">
+          <div class="mermaid mermaid-diagram">
+flowchart TB
+    Client["Client Applications"] --> LB["Load Balancer"]
+    LB --> Gateway["API Gateway"]
+    Gateway --> Order["Order Service"]
 
-            <section class="zone-card zone-services">
-              <span class="zone-title">Services</span>
-              <div class="service-layout">
-                <div class="diagram-box service-primary">Order Service</div>
-                <div class="service-row">
-                  <div class="diagram-box">Payment Service</div>
-                  <div class="diagram-box">Inventory Service</div>
-                  <div class="diagram-box">Notification Service</div>
-                  <div class="diagram-box">Logistics Service</div>
-                </div>
-              </div>
-            </section>
+    subgraph Services["Services"]
+        Order --> Payment["Payment Service"]
+        Order --> Inventory["Inventory Service"]
+        Order --> Logistics["Logistics Service"]
+        Order --> Notify["Notification Service"]
+    end
 
-            <section class="zone-card zone-messaging">
-              <span class="zone-title">Messaging</span>
-              <div class="diagram-cylinder">Apache Kafka</div>
-              <div class="zone-chips">
-                <span>Order Topic</span>
-                <span>Retry Topic</span>
-                <span>DLQ</span>
-              </div>
-            </section>
+    subgraph Messaging["Messaging"]
+        Kafka["Apache Kafka"]
+        Retry["Retry Topic"]
+        DLQ["Dead-Letter Queue"]
+    end
 
-            <section class="zone-card zone-observability">
-              <span class="zone-title">Observability</span>
-              <div class="service-row service-row-compact">
-                <div class="diagram-box">ELK Stack</div>
-                <div class="diagram-box">Prometheus</div>
-                <div class="diagram-box">Grafana</div>
-              </div>
-            </section>
+    Order --> Kafka
+    Kafka --> Payment
+    Kafka --> Inventory
+    Kafka --> Logistics
+    Kafka --> Notify
+    Payment -. failure .-> Retry
+    Inventory -. failure .-> Retry
+    Logistics -. poison event .-> DLQ
+    Notify -. poison event .-> DLQ
 
-            <section class="zone-card zone-data">
-              <span class="zone-title">Data</span>
-              <div class="data-layout">
-                <div class="diagram-cylinder">PostgreSQL Orders</div>
-                <div class="diagram-cylinder">Redis Cache</div>
-                <div class="diagram-cylinder">Audit Store</div>
-              </div>
-            </section>
+    subgraph Data["Data"]
+        OrdersDB[("PostgreSQL Orders")]
+        Redis[("Redis Cache")]
+        Audit[("Audit Store")]
+    end
+
+    Order --> OrdersDB
+    Order --> Redis
+    Order --> Audit
+    Payment --> OrdersDB
+    Inventory --> OrdersDB
+    Logistics --> OrdersDB
+    Notify --> Audit
+
+    subgraph Observability["Observability"]
+        ELK["ELK Stack"]
+        Prom["Prometheus"]
+        Graf["Grafana"]
+    end
+
+    Order --> ELK
+    Payment --> Prom
+    Inventory --> Prom
+    Logistics --> ELK
+    Prom --> Graf
           </div>
           <div class="flow-strip">
             <span>Request Flow: Client -> Gateway -> Order Service</span>
@@ -173,34 +175,40 @@
           <p class="eyebrow">Cloud-Native Deployment Architecture</p>
           <h2>How the platform runs across Kubernetes, Kafka, data stores, and monitoring.</h2>
         </div>
-        <div class="architecture-canvas architecture-canvas-secondary">
-          <div class="deployment-grid">
-            <section class="zone-card zone-kubernetes">
-              <span class="zone-title">Kubernetes Cluster</span>
-              <div class="service-row">
-                <div class="diagram-box">Gateway Pods</div>
-                <div class="diagram-box">Order Pods</div>
-                <div class="diagram-box">Consumer Pods</div>
-                <div class="diagram-box">Worker Pods</div>
-              </div>
-            </section>
-            <section class="zone-card zone-platform">
-              <span class="zone-title">Platform Dependencies</span>
-              <div class="platform-columns">
-                <div class="platform-column">
-                  <div class="diagram-cylinder">Apache Kafka</div>
-                  <div class="diagram-cylinder">Schema Registry</div>
-                </div>
-                <div class="platform-column">
-                  <div class="diagram-cylinder">AWS RDS</div>
-                  <div class="diagram-cylinder">Redis</div>
-                </div>
-                <div class="platform-column">
-                  <div class="diagram-box">Prometheus</div>
-                  <div class="diagram-box">Grafana</div>
-                </div>
-              </div>
-            </section>
+        <div class="mermaid-shell">
+          <div class="mermaid mermaid-diagram">
+flowchart LR
+    Ingress["Ingress / Load Balancer"] --> K8s
+
+    subgraph K8s["Kubernetes Cluster"]
+        GatewayPods["Gateway Pods"]
+        OrderPods["Order Service Pods"]
+        ConsumerPods["Consumer Pods"]
+        WorkerPods["Worker Pods"]
+    end
+
+    GatewayPods --> OrderPods
+    OrderPods --> ConsumerPods
+    ConsumerPods --> WorkerPods
+
+    subgraph Platform["Platform Dependencies"]
+        Kafka[("Apache Kafka")]
+        Schema[("Schema Registry")]
+        RDS[("AWS RDS")]
+        Redis[("Redis")]
+        Prom["Prometheus"]
+        Graf["Grafana"]
+    end
+
+    OrderPods --> Kafka
+    ConsumerPods --> Kafka
+    Kafka --> Schema
+    OrderPods --> RDS
+    ConsumerPods --> RDS
+    OrderPods --> Redis
+    WorkerPods --> Prom
+    ConsumerPods --> Prom
+    Prom --> Graf
           </div>
           <div class="flow-strip">
             <span>Scale Unit: stateless pods scale horizontally behind the ingress layer</span>
@@ -270,5 +278,23 @@
         <a href="../../index.html#system-design-library">Back to Library</a>
       </footer>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <script>
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: "base",
+        securityLevel: "loose",
+        themeVariables: {
+          background: "#0c121d",
+          primaryColor: "#191f2e",
+          primaryTextColor: "#eff4ff",
+          primaryBorderColor: "#8ea0c9",
+          lineColor: "#b6c4e2",
+          secondaryColor: "#141b28",
+          tertiaryColor: "#101722",
+          fontFamily: "\"IBM Plex Mono\", monospace"
+        }
+      });
+    </script>
   </body>
 </html>
