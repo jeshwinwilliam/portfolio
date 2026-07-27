@@ -51,6 +51,10 @@ a {
   text-decoration: none;
 }
 
+button {
+  font: inherit;
+}
+
 .site-header,
 .section-shell,
 .site-footer {
@@ -367,6 +371,18 @@ pre {
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
+.link-card-button,
+.inline-button,
+.footer-button,
+.resume-close {
+  cursor: pointer;
+}
+
+.link-card-button {
+  width: 100%;
+  text-align: left;
+}
+
 .link-card:hover,
 .project-card:hover,
 .stack-card:hover,
@@ -545,6 +561,19 @@ pre {
   margin-top: 26px;
 }
 
+.inline-button,
+.footer-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+}
+
+.inline-button:hover,
+.footer-button:hover {
+  color: var(--text);
+}
+
 .contact-form {
   display: grid;
   gap: 14px;
@@ -576,6 +605,93 @@ textarea::placeholder {
   display: flex;
   justify-content: space-between;
   gap: 12px;
+}
+
+.resume-modal[hidden] {
+  display: none;
+}
+
+.resume-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.resume-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.82);
+  backdrop-filter: blur(12px);
+}
+
+.resume-dialog {
+  position: relative;
+  width: min(1180px, 100%);
+  height: min(88vh, 920px);
+  padding: 22px;
+  border-radius: 28px;
+  border: 1px solid var(--line-strong);
+  background: linear-gradient(180deg, rgba(8, 14, 29, 0.98), rgba(6, 10, 21, 0.95));
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 18px;
+}
+
+.resume-dialog-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.resume-kicker {
+  margin: 0 0 8px;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.74rem;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.resume-close {
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+}
+
+.resume-frame-shell {
+  min-height: 0;
+  overflow: auto;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.resume-pages {
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+}
+
+.resume-page {
+  margin: 0;
+  padding: 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line);
+}
+
+.resume-page img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  background: #fff;
 }
 
 @media (max-width: 1024px) {
@@ -622,5 +738,19 @@ textarea::placeholder {
 
   h1 {
     max-width: none;
+  }
+
+  .resume-modal {
+    padding: 12px;
+  }
+
+  .resume-dialog {
+    height: min(92vh, 920px);
+    padding: 16px;
+  }
+
+  .resume-dialog-top {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

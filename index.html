@@ -60,7 +60,7 @@
             cloud-native infrastructure. I build reliable backend platforms that scale.
           </p>
           <div class="hero-actions">
-            <a class="button button-primary" href="./assets/Jeshwin-William-James-Resume.pdf" target="_blank" rel="noreferrer">Open Resume</a>
+            <button class="button button-primary" type="button" data-resume-open>View Resume</button>
             <a class="button button-secondary" href="https://github.com/jeshwinwilliam" target="_blank" rel="noreferrer">Open GitHub</a>
             <a class="button button-secondary" href="#publication">Open Research</a>
             <a class="button button-secondary" href="https://www.linkedin.com/in/jeshwin-william-james-33a83b1a9/" target="_blank" rel="noreferrer">Open LinkedIn</a>
@@ -115,11 +115,11 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
             <strong>LinkedIn</strong>
             <p>Experience, credentials, and professional network.</p>
           </a>
-          <a class="link-card" href="./assets/Jeshwin-William-James-Resume.pdf" target="_blank" rel="noreferrer">
+          <button class="link-card link-card-button" type="button" data-resume-open>
             <span class="link-tag">Resume</span>
-            <strong>Latest Resume</strong>
-            <p>Recent experience, quantified outcomes, and technical strengths.</p>
-          </a>
+            <strong>View Latest Resume</strong>
+            <p>Read the current resume inside the site viewer with recent experience and technical strengths.</p>
+          </button>
           <a class="link-card" href="https://link.springer.com/chapter/10.1007/978-981-19-5443-6_16" target="_blank" rel="noreferrer">
             <span class="link-tag">Research</span>
             <strong>Springer Publication</strong>
@@ -436,7 +436,7 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
               <a href="mailto:jeshwin.w.james@gmail.com">jeshwin.w.james@gmail.com</a>
               <a href="https://www.linkedin.com/in/jeshwin-william-james-33a83b1a9/" target="_blank" rel="noreferrer">LinkedIn</a>
               <a href="https://github.com/jeshwinwilliam" target="_blank" rel="noreferrer">GitHub</a>
-              <a href="./assets/Jeshwin-William-James-Resume.pdf" target="_blank" rel="noreferrer">Resume</a>
+              <button class="inline-button" type="button" data-resume-open>View Resume</button>
             </div>
           </div>
           <form class="contact-form" action="mailto:jeshwin.w.james@gmail.com" method="post" enctype="text/plain">
@@ -458,9 +458,34 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
       </section>
     </main>
 
+    <div class="resume-modal" id="resume-modal" hidden>
+      <div class="resume-backdrop" data-resume-close></div>
+      <section class="resume-dialog" role="dialog" aria-modal="true" aria-labelledby="resume-title">
+        <div class="resume-dialog-top">
+          <div>
+            <p class="resume-kicker">Resume Viewer</p>
+            <h2 id="resume-title">Jeshwin William James</h2>
+          </div>
+          <button class="resume-close" type="button" aria-label="Close resume viewer" data-resume-close>
+            Close
+          </button>
+        </div>
+        <div class="resume-frame-shell">
+          <div class="resume-pages" aria-label="Jeshwin William James resume pages">
+            <figure class="resume-page">
+              <img src="./assets/resume-pages/resume-1.png" alt="Resume page 1 for Jeshwin William James" />
+            </figure>
+            <figure class="resume-page">
+              <img src="./assets/resume-pages/resume-2.png" alt="Resume page 2 for Jeshwin William James" />
+            </figure>
+          </div>
+        </div>
+      </section>
+    </div>
+
     <footer class="site-footer">
       <p>&copy; 2026 Jeshwin William James</p>
-      <a href="./assets/Jeshwin-William-James-Resume.pdf" target="_blank" rel="noreferrer">Download Resume</a>
+      <button class="footer-button" type="button" data-resume-open>View Resume</button>
     </footer>
 
     <script src="./script.js"></script>

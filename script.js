@@ -1,4 +1,5 @@
 const viewNode = document.getElementById("view-count");
+const resumeModal = document.getElementById("resume-modal");
 
 async function loadViewCount() {
   if (!viewNode) {
@@ -23,3 +24,50 @@ async function loadViewCount() {
 }
 
 loadViewCount();
+
+function openResumeModal(event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  if (!resumeModal) {
+    return;
+  }
+
+  resumeModal.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closeResumeModal(event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  if (!resumeModal) {
+    return;
+  }
+
+  resumeModal.hidden = true;
+  document.body.style.overflow = "";
+}
+
+document.addEventListener("click", (event) => {
+  const openTrigger = event.target.closest("[data-resume-open]");
+  if (openTrigger) {
+    openResumeModal(event);
+    return;
+  }
+
+  const closeTrigger = event.target.closest("[data-resume-close]");
+  if (closeTrigger) {
+    closeResumeModal(event);
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && resumeModal && !resumeModal.hidden) {
+    closeResumeModal();
+  }
+});

@@ -2,6 +2,15 @@
 
 Static personal website for Jeshwin William James.
 
+[![Live Site](https://img.shields.io/badge/Live-jeshwin.com-0b1123?style=for-the-badge&logo=googlechrome&logoColor=79f7c6)](https://jeshwin.com)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-jeshwinwilliam%2Fportfolio-0b1123?style=for-the-badge&logo=github&logoColor=ffffff)](https://github.com/jeshwinwilliam/portfolio)
+![HTML5](https://img.shields.io/badge/HTML5-Structure-e34f26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-Dark%20UI-1572b6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-Interactions-f7df1e?style=for-the-badge&logo=javascript&logoColor=111111)
+![Vercel](https://img.shields.io/badge/Deploy-Vercel-111111?style=for-the-badge&logo=vercel&logoColor=white)
+![Cloudflare DNS](https://img.shields.io/badge/DNS-Cloudflare-f38020?style=for-the-badge&logo=cloudflare&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Live%20Portfolio-1b4332?style=for-the-badge&logo=vercel&logoColor=95d5b2)
+
 ## System design
 
 ```mermaid
