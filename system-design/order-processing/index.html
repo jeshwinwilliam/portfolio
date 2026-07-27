@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Distributed Order Processing Platform | Jeshwin William James</title>
+    <meta
+      name="description"
+      content="System design case study for a distributed order processing platform by Jeshwin William James."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../styles.css" />
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="../../index.html#top">
+        <span class="brand-copy">
+          <strong>Jeshwin William James</strong>
+          <span>jeshwin.com</span>
+          <small>Systems, scale, signal.</small>
+        </span>
+      </a>
+      <nav class="top-nav" aria-label="Primary">
+        <a href="../../index.html#projects">Projects</a>
+        <a href="../../index.html#system-design-library">System Design</a>
+        <a href="../../index.html#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero section-shell case-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">System Design Case Study</p>
+          <h1>
+            Distributed Order Processing Platform
+            <span>for payment-safe, event-driven order workflows.</span>
+          </h1>
+          <p class="hero-text">
+            This case study shows how I would design a high-throughput order platform spanning API ingestion,
+            payment execution, inventory reservation, logistics handoff, and audit-safe recovery using Kafka and service boundaries.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="https://github.com/jeshwinwilliam/distributed-event-processing-system" target="_blank" rel="noreferrer">Open Reference Repo</a>
+            <a class="button button-secondary" href="../../index.html#system-design-library">Back to System Design</a>
+          </div>
+        </div>
+        <aside class="hero-panel">
+          <div class="panel-card pulse-card">
+            <p class="panel-label">Key Assumptions</p>
+            <div class="signal-grid">
+              <article>
+                <span class="signal-value">50k/min</span>
+                <span class="signal-key">order events, design assumption</span>
+              </article>
+              <article>
+                <span class="signal-value">&lt; 300ms</span>
+                <span class="signal-key">p95 intake latency, design assumption</span>
+              </article>
+              <article>
+                <span class="signal-value">0 dupes</span>
+                <span class="signal-key">duplicate payment execution tolerated</span>
+              </article>
+              <article>
+                <span class="signal-value">HA</span>
+                <span class="signal-key">multi-zone availability target</span>
+              </article>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Problem</p>
+          <h2>Process every order exactly once from user checkout to logistics handoff.</h2>
+        </div>
+        <p class="case-text">
+          A commerce platform needs to accept bursty checkout traffic, authorize payments, reserve inventory,
+          trigger fulfillment, and maintain an auditable order timeline without blocking the user on every downstream dependency.
+        </p>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Requirements</p>
+          <h2>Throughput, safety, and recovery are all first-class constraints.</h2>
+        </div>
+        <div class="requirement-grid">
+          <article class="requirement-card"><strong>50,000 events per minute</strong><span>Design assumption for peak sale traffic.</span></article>
+          <article class="requirement-card"><strong>p95 below 300 ms</strong><span>Design assumption for order intake responsiveness.</span></article>
+          <article class="requirement-card"><strong>No duplicate payment execution</strong><span>Idempotency at API and consumer boundaries.</span></article>
+          <article class="requirement-card"><strong>High availability</strong><span>Stateless services, replicated brokers, and multi-zone data paths.</span></article>
+          <article class="requirement-card"><strong>Auditability</strong><span>Every state change is evented and queryable.</span></article>
+          <article class="requirement-card"><strong>Graceful degradation</strong><span>Failures isolate and retry without losing the order timeline.</span></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Architecture Diagram</p>
+          <h2>Layered order-processing architecture with service zones and event flow.</h2>
+        </div>
+        <div class="architecture-canvas">
+          <div class="architecture-header">
+            <div class="diagram-box diagram-box-client">Client Applications</div>
+          </div>
+          <div class="architecture-grid">
+            <section class="zone-card zone-edge">
+              <span class="zone-title">Edge</span>
+              <div class="zone-stack">
+                <div class="diagram-box">Load Balancer</div>
+                <div class="diagram-box">API Gateway</div>
+              </div>
+            </section>
+
+            <section class="zone-card zone-services">
+              <span class="zone-title">Services</span>
+              <div class="service-layout">
+                <div class="diagram-box service-primary">Order Service</div>
+                <div class="service-row">
+                  <div class="diagram-box">Payment Service</div>
+                  <div class="diagram-box">Inventory Service</div>
+                  <div class="diagram-box">Notification Service</div>
+                  <div class="diagram-box">Logistics Service</div>
+                </div>
+              </div>
+            </section>
+
+            <section class="zone-card zone-messaging">
+              <span class="zone-title">Messaging</span>
+              <div class="diagram-cylinder">Apache Kafka</div>
+              <div class="zone-chips">
+                <span>Order Topic</span>
+                <span>Retry Topic</span>
+                <span>DLQ</span>
+              </div>
+            </section>
+
+            <section class="zone-card zone-observability">
+              <span class="zone-title">Observability</span>
+              <div class="service-row service-row-compact">
+                <div class="diagram-box">ELK Stack</div>
+                <div class="diagram-box">Prometheus</div>
+                <div class="diagram-box">Grafana</div>
+              </div>
+            </section>
+
+            <section class="zone-card zone-data">
+              <span class="zone-title">Data</span>
+              <div class="data-layout">
+                <div class="diagram-cylinder">PostgreSQL Orders</div>
+                <div class="diagram-cylinder">Redis Cache</div>
+                <div class="diagram-cylinder">Audit Store</div>
+              </div>
+            </section>
+          </div>
+          <div class="flow-strip">
+            <span>Request Flow: Client -> Gateway -> Order Service</span>
+            <span>Event Flow: Order Service -> Kafka -> Payment / Inventory / Logistics / Notification</span>
+            <span>Recovery Flow: Failed consumers -> Retry Topic -> DLQ -> Operator Replay</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Cloud-Native Deployment Architecture</p>
+          <h2>How the platform runs across Kubernetes, Kafka, data stores, and monitoring.</h2>
+        </div>
+        <div class="architecture-canvas architecture-canvas-secondary">
+          <div class="deployment-grid">
+            <section class="zone-card zone-kubernetes">
+              <span class="zone-title">Kubernetes Cluster</span>
+              <div class="service-row">
+                <div class="diagram-box">Gateway Pods</div>
+                <div class="diagram-box">Order Pods</div>
+                <div class="diagram-box">Consumer Pods</div>
+                <div class="diagram-box">Worker Pods</div>
+              </div>
+            </section>
+            <section class="zone-card zone-platform">
+              <span class="zone-title">Platform Dependencies</span>
+              <div class="platform-columns">
+                <div class="platform-column">
+                  <div class="diagram-cylinder">Apache Kafka</div>
+                  <div class="diagram-cylinder">Schema Registry</div>
+                </div>
+                <div class="platform-column">
+                  <div class="diagram-cylinder">AWS RDS</div>
+                  <div class="diagram-cylinder">Redis</div>
+                </div>
+                <div class="platform-column">
+                  <div class="diagram-box">Prometheus</div>
+                  <div class="diagram-box">Grafana</div>
+                </div>
+              </div>
+            </section>
+          </div>
+          <div class="flow-strip">
+            <span>Scale Unit: stateless pods scale horizontally behind the ingress layer</span>
+            <span>Persistence: Kafka retains event history while RDS stores transactional order state</span>
+            <span>Monitoring: metrics, logs, and lag dashboards drive incident response and recovery</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Key Decisions</p>
+          <h2>Every major component exists to protect throughput and correctness.</h2>
+        </div>
+        <div class="decision-grid">
+          <article class="decision-card"><h3>Why Kafka?</h3><p>Kafka decouples order intake from downstream payment, inventory, and logistics services while preserving replayability and durable audit trails.</p></article>
+          <article class="decision-card"><h3>Why PostgreSQL?</h3><p>Order state transitions and payment references benefit from strong consistency, relational modeling, and transactional writes more than wide-column throughput.</p></article>
+          <article class="decision-card"><h3>Why Redis?</h3><p>Idempotency keys, recent order locks, and short-lived deduplication checks fit well in an in-memory cache with aggressive TTL management.</p></article>
+          <article class="decision-card"><h3>How are events partitioned?</h3><p>Partition by `orderId` so each order’s lifecycle stays ordered while still distributing work horizontally across consumers.</p></article>
+          <article class="decision-card"><h3>How are duplicates handled?</h3><p>API requests carry idempotency keys, consumers persist processed event tokens, and payment requests use provider-safe idempotent references.</p></article>
+          <article class="decision-card"><h3>What if a service fails?</h3><p>Failed consumers back off, publish to retry topics, and eventually route poison events to a dead-letter topic for operator review.</p></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Trade-Offs</p>
+          <h2>Decoupling helps scale, but it changes how consistency is achieved.</h2>
+        </div>
+        <div class="tradeoff-grid">
+          <article class="tradeoff-card"><h3>Kafka</h3><p>Improves decoupling and replayability, but introduces eventual consistency, broker operations, and partition management complexity.</p></article>
+          <article class="tradeoff-card"><h3>Saga orchestration</h3><p>Reduces cross-service synchronous coupling, but requires careful compensation design and observability to understand incomplete flows.</p></article>
+          <article class="tradeoff-card"><h3>PostgreSQL over Cassandra</h3><p>Improves transactional integrity for payments and orders, but sacrifices some write scalability that a wider distributed store could offer.</p></article>
+          <article class="tradeoff-card"><h3>Caching</h3><p>Redis improves speed for dedupe checks and hot order lookups, but adds cache invalidation and consistency considerations.</p></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Scaling And Failure Handling</p>
+          <h2>Horizontal scale only matters when failure paths are equally designed.</h2>
+        </div>
+        <div class="failure-grid">
+          <article class="failure-card"><h3>Horizontal scaling</h3><p>Gateway and stateless services scale behind load balancers; consumer groups scale with Kafka partitions.</p></article>
+          <article class="failure-card"><h3>Partition strategy</h3><p>Use `orderId` for event ordering and shard high-cardinality hot keys with tenant-aware partitioning when needed.</p></article>
+          <article class="failure-card"><h3>Retries and circuit breakers</h3><p>Transient failures use exponential backoff, while circuit breakers protect order intake from unstable downstream services.</p></article>
+          <article class="failure-card"><h3>Dead-letter handling</h3><p>Unrecoverable events land in DLQ topics with replay tooling and operator dashboards for targeted reprocessing.</p></article>
+          <article class="failure-card"><h3>Disaster recovery</h3><p>Replicate Kafka and databases across zones, snapshot order state, and retain event history for controlled restoration.</p></article>
+          <article class="failure-card"><h3>Monitoring</h3><p>Track topic lag, payment failures, idempotency collisions, inventory reservation misses, and order-state aging.</p></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Repository</p>
+          <h2>Public implementation reference.</h2>
+        </div>
+        <p class="case-text">
+          Public reference implementation:
+          <a href="https://github.com/jeshwinwilliam/distributed-event-processing-system" target="_blank" rel="noreferrer">jeshwinwilliam/distributed-event-processing-system</a>.
+          The repository reflects the core distributed-event, retry, dead-letter, and consumer-scaling patterns behind this architecture.
+        </p>
+      </section>
+
+      <footer class="site-footer">
+        <p>&copy; 2026 Jeshwin William James</p>
+        <a href="../../index.html#system-design-library">Back to Library</a>
+      </footer>
+    </main>
+  </body>
+</html>

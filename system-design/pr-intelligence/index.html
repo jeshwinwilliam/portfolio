@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PR Intelligence Platform | Jeshwin William James</title>
+    <meta
+      name="description"
+      content="System design case study for the PR Intelligence Platform by Jeshwin William James."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../styles.css" />
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="../../index.html#top">
+        <span class="brand-copy">
+          <strong>Jeshwin William James</strong>
+          <span>jeshwin.com</span>
+          <small>Systems, scale, signal.</small>
+        </span>
+      </a>
+      <nav class="top-nav" aria-label="Primary">
+        <a href="../../index.html#projects">Projects</a>
+        <a href="../../index.html#system-design-library">System Design</a>
+        <a href="../../index.html#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero section-shell case-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">System Design Case Study</p>
+          <h1>
+            PR Intelligence Platform
+            <span>for async code review analysis and resilient delivery.</span>
+          </h1>
+          <p class="hero-text">
+            This architecture absorbs webhook bursts from GitHub, fans work out through Kafka-backed queues,
+            runs analyzers and model-assisted review workers, and stores review findings with strong observability and recovery paths.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="https://github.com/jeshwinwilliam/pr-intelligence-platform-jeshwin" target="_blank" rel="noreferrer">Open Repo</a>
+            <a class="button button-secondary" href="../../index.html#system-design-library">Back to System Design</a>
+          </div>
+        </div>
+        <aside class="hero-panel">
+          <div class="panel-card pulse-card">
+            <p class="panel-label">Key Assumptions</p>
+            <div class="signal-grid">
+              <article>
+                <span class="signal-value">10k/hr</span>
+                <span class="signal-key">pull request reviews, design assumption</span>
+              </article>
+              <article>
+                <span class="signal-value">&lt; 5s</span>
+                <span class="signal-key">initial acknowledgement, design assumption</span>
+              </article>
+              <article>
+                <span class="signal-value">Burst-safe</span>
+                <span class="signal-key">webhook burst absorption</span>
+              </article>
+              <article>
+                <span class="signal-value">Traceable</span>
+                <span class="signal-key">review history and replay support</span>
+              </article>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Problem</p>
+          <h2>Review pull requests asynchronously without blocking GitHub delivery or losing findings.</h2>
+        </div>
+        <p class="case-text">
+          Engineering teams want AI-assisted and rule-driven PR analysis, but webhook traffic is bursty,
+          model calls can be slow, and reviews must still be queryable, rate-limited, and fault-tolerant.
+        </p>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Requirements</p>
+          <h2>Latency, replayability, and operational visibility all matter.</h2>
+        </div>
+        <div class="requirement-grid">
+          <article class="requirement-card"><strong>10,000 PR events per hour</strong><span>Design assumption for org-wide webhook traffic.</span></article>
+          <article class="requirement-card"><strong>Sub-5 second acknowledgement</strong><span>Design assumption so webhook senders are not blocked.</span></article>
+          <article class="requirement-card"><strong>Review durability</strong><span>Every analysis request and result must be stored.</span></article>
+          <article class="requirement-card"><strong>Rate limiting</strong><span>Protect model-serving and analysis workers from abuse.</span></article>
+          <article class="requirement-card"><strong>Failure recovery</strong><span>Jobs retry safely without losing PR state.</span></article>
+          <article class="requirement-card"><strong>Observability</strong><span>Operator insight into queues, failures, latency, and model errors.</span></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Architecture Diagram</p>
+          <h2>Webhook ingestion through analysis workers to review storage.</h2>
+        </div>
+        <div class="case-diagram">
+          <div class="case-row">
+            <span>GitHub Webhook</span><i></i><span>API Gateway</span><i></i><span>Webhook Intake Service</span><i></i><span>Kafka Review Queue</span>
+          </div>
+          <div class="case-row">
+            <span>Static Analysis Workers</span><i></i><span>Policy Engine</span><i></i><span>AI / Model Service</span>
+          </div>
+          <div class="case-row">
+            <span>Review Storage</span><i></i><span>Rate Limit Store</span><i></i><span>Notification Service</span>
+          </div>
+          <div class="case-row">
+            <span>Retry Topics</span><i></i><span>Dead-Letter Queue</span><i></i><span>Metrics / Traces / Logs</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Key Decisions</p>
+          <h2>Async orchestration is what makes review quality and reliability coexist.</h2>
+        </div>
+        <div class="decision-grid">
+          <article class="decision-card"><h3>Why Kafka?</h3><p>Kafka buffers webhook bursts, decouples expensive analysis from intake, and supports replaying jobs after worker or model incidents.</p></article>
+          <article class="decision-card"><h3>Why persistent review storage?</h3><p>Review findings need queryable history, diff correlation, status tracking, and future auditability across retries and model reruns.</p></article>
+          <article class="decision-card"><h3>How do you partition work?</h3><p>Partition by repository and pull request identifier so events for the same PR stay ordered while still enabling cross-repo scale-out.</p></article>
+          <article class="decision-card"><h3>How are duplicates handled?</h3><p>Webhook delivery IDs and PR event version checks prevent duplicate analysis jobs and duplicate comment delivery.</p></article>
+          <article class="decision-card"><h3>Where is caching useful?</h3><p>Cache repository metadata, policy bundles, and recent rate-limit tokens so repeat reads do not overwhelm core services.</p></article>
+          <article class="decision-card"><h3>How is the system monitored?</h3><p>Track queue lag, worker execution time, model error rates, API throttling, and review completion latency end to end.</p></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Trade-Offs</p>
+          <h2>Asynchronous analysis is resilient, but not free.</h2>
+        </div>
+        <div class="tradeoff-grid">
+          <article class="tradeoff-card"><h3>Queue-first design</h3><p>Improves resilience and throughput, but means analysis is eventually consistent rather than instant.</p></article>
+          <article class="tradeoff-card"><h3>AI / model integration</h3><p>Improves review coverage and developer signal, but introduces rate limits, cost controls, and fallback requirements.</p></article>
+          <article class="tradeoff-card"><h3>Persistent history</h3><p>Improves traceability and debugging, but adds schema design and retention planning.</p></article>
+          <article class="tradeoff-card"><h3>Worker specialization</h3><p>Improves isolation between rule engines and model calls, but increases orchestration and deployment complexity.</p></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Scaling And Failure Handling</p>
+          <h2>Failure recovery is part of the product, not just operations.</h2>
+        </div>
+        <div class="failure-grid">
+          <article class="failure-card"><h3>Horizontal scaling</h3><p>Scale intake services independently from analysis workers and model-serving adapters.</p></article>
+          <article class="failure-card"><h3>Retries</h3><p>Transient GitHub API and model service failures retry with bounded backoff and status visibility.</p></article>
+          <article class="failure-card"><h3>Circuit breakers</h3><p>If the model service degrades, fallback to deterministic rules so the review pipeline still produces signal.</p></article>
+          <article class="failure-card"><h3>Dead-letter queues</h3><p>Malformed webhook payloads or poisoned jobs land in DLQ topics for targeted inspection and replay.</p></article>
+          <article class="failure-card"><h3>Idempotency</h3><p>Use delivery IDs, PR state versions, and stable review IDs to prevent duplicate comments or duplicate persisted findings.</p></article>
+          <article class="failure-card"><h3>Disaster recovery</h3><p>Retain review events and storage snapshots so historical analyses and system state can be rebuilt if needed.</p></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Repository</p>
+          <h2>Actual implementation link.</h2>
+        </div>
+        <p class="case-text">
+          Repository:
+          <a href="https://github.com/jeshwinwilliam/pr-intelligence-platform-jeshwin" target="_blank" rel="noreferrer">jeshwinwilliam/pr-intelligence-platform-jeshwin</a>.
+          This case study maps directly to the project’s webhook ingestion, asynchronous orchestration, persistence, and recovery patterns.
+        </p>
+      </section>
+
+      <footer class="site-footer">
+        <p>&copy; 2026 Jeshwin William James</p>
+        <a href="../../index.html#system-design-library">Back to Library</a>
+      </footer>
+    </main>
+  </body>
+</html>

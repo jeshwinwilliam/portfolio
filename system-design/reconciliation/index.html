@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real-Time Transaction Reconciliation System | Jeshwin William James</title>
+    <meta
+      name="description"
+      content="System design case study for a real-time transaction reconciliation system by Jeshwin William James."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../styles.css" />
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="../../index.html#top">
+        <span class="brand-copy">
+          <strong>Jeshwin William James</strong>
+          <span>jeshwin.com</span>
+          <small>Systems, scale, signal.</small>
+        </span>
+      </a>
+      <nav class="top-nav" aria-label="Primary">
+        <a href="../../index.html#projects">Projects</a>
+        <a href="../../index.html#system-design-library">System Design</a>
+        <a href="../../index.html#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero section-shell case-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">System Design Case Study</p>
+          <h1>
+            Real-Time Transaction Reconciliation System
+            <span>for low-latency financial integrity and auditability.</span>
+          </h1>
+          <p class="hero-text">
+            This design focuses on trade ingestion, validation, ledger updates, reconciliation, duplicate detection,
+            and partition-aware processing for financial operations where consistency and audit trails are non-negotiable.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-secondary" href="../../index.html#system-design-library">Back to System Design</a>
+            <a class="button button-secondary" href="../../index.html#experience">See Relevant Experience</a>
+          </div>
+        </div>
+        <aside class="hero-panel">
+          <div class="panel-card pulse-card">
+            <p class="panel-label">Key Assumptions</p>
+            <div class="signal-grid">
+              <article>
+                <span class="signal-value">80k/min</span>
+                <span class="signal-key">transaction events, design assumption</span>
+              </article>
+              <article>
+                <span class="signal-value">&lt; 200ms</span>
+                <span class="signal-key">validation path p95, design assumption</span>
+              </article>
+              <article>
+                <span class="signal-value">Exactly-once</span>
+                <span class="signal-key">ledger mutation intent</span>
+              </article>
+              <article>
+                <span class="signal-value">Audit-first</span>
+                <span class="signal-key">regulatory visibility target</span>
+              </article>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Problem</p>
+          <h2>Continuously reconcile fast-moving transactions without compromising ledger integrity.</h2>
+        </div>
+        <p class="case-text">
+          A financial platform must ingest trade and transaction events, validate them, update internal ledgers,
+          reconcile against downstream settlement views, and detect duplicates or mismatches quickly enough for operations teams to act.
+        </p>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Requirements</p>
+          <h2>Fast path decisions still need accounting-grade correctness.</h2>
+        </div>
+        <div class="requirement-grid">
+          <article class="requirement-card"><strong>80,000 events per minute</strong><span>Design assumption for institutional transaction flow.</span></article>
+          <article class="requirement-card"><strong>p95 below 200 ms</strong><span>Design assumption for validation and write admission.</span></article>
+          <article class="requirement-card"><strong>No duplicate ledger impact</strong><span>Exactly-once intent for financial state mutation.</span></article>
+          <article class="requirement-card"><strong>End-to-end auditability</strong><span>Every correction and reconciliation decision is traceable.</span></article>
+          <article class="requirement-card"><strong>Mismatch visibility</strong><span>Operations teams need near-real-time break detection.</span></article>
+          <article class="requirement-card"><strong>High availability</strong><span>Outages cannot silently drop financial events.</span></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Architecture Diagram</p>
+          <h2>Trade intake through validation, ledger updates, and reconciliation.</h2>
+        </div>
+        <div class="case-diagram">
+          <div class="case-row">
+            <span>Trade Sources</span><i></i><span>API Gateway</span><i></i><span>Validation Service</span><i></i><span>Kafka Transaction Topic</span>
+          </div>
+          <div class="case-row">
+            <span>Ledger Writer</span><i></i><span>Reconciliation Engine</span><i></i><span>Duplicate Detector</span>
+          </div>
+          <div class="case-row">
+            <span>PostgreSQL / Oracle Ledger</span><i></i><span>Exception Store</span><i></i><span>Ops Dashboard</span>
+          </div>
+          <div class="case-row">
+            <span>Retry Topics</span><i></i><span>DLQ</span><i></i><span>Metrics / Alerts / Traces</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Key Decisions</p>
+          <h2>Correctness and operational clarity drive the architecture.</h2>
+        </div>
+        <div class="decision-grid">
+          <article class="decision-card"><h3>Why Kafka?</h3><p>Kafka provides durable sequencing, replay support, and ingestion buffering between trade intake and reconciliation workloads.</p></article>
+          <article class="decision-card"><h3>Why PostgreSQL or Oracle over Cassandra?</h3><p>Ledger writes and reconciliation references benefit more from transactional guarantees and relational consistency than from wide-column write fan-out.</p></article>
+          <article class="decision-card"><h3>How are events partitioned?</h3><p>Partition by account, ledger book, or trade group so ordering-sensitive financial updates stay coherent.</p></article>
+          <article class="decision-card"><h3>How are duplicates handled?</h3><p>Use stable transaction identifiers, dedupe tables, and write-side idempotency before any ledger mutation is finalized.</p></article>
+          <article class="decision-card"><h3>Where is caching useful?</h3><p>Cache reference data, account metadata, and validation rules, but never treat cache alone as the source of ledger truth.</p></article>
+          <article class="decision-card"><h3>What happens when a service fails?</h3><p>Writes pause safely behind queues, retries preserve ordering, and unmatched records surface as reconciliation exceptions instead of disappearing silently.</p></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Trade-Offs</p>
+          <h2>Low latency and strong consistency constantly compete.</h2>
+        </div>
+        <div class="tradeoff-grid">
+          <article class="tradeoff-card"><h3>Strong consistency</h3><p>Improves financial correctness, but can reduce raw throughput compared to eventually consistent alternatives.</p></article>
+          <article class="tradeoff-card"><h3>Partitioned processing</h3><p>Improves scale and ordering guarantees, but creates hot-partition risk for highly active accounts or instruments.</p></article>
+          <article class="tradeoff-card"><h3>Real-time reconciliation</h3><p>Improves operational response, but increases compute cost and pipeline complexity relative to batch-only reconciliation.</p></article>
+          <article class="tradeoff-card"><h3>Detailed audit logging</h3><p>Improves compliance and root-cause analysis, but expands storage, retention, and indexing costs.</p></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Scaling And Failure Handling</p>
+          <h2>Financial systems need both elasticity and predictable recovery.</h2>
+        </div>
+        <div class="failure-grid">
+          <article class="failure-card"><h3>Horizontal scaling</h3><p>Stateless validation services and consumer groups scale horizontally behind stable partitioning rules.</p></article>
+          <article class="failure-card"><h3>Retries</h3><p>Only retry non-mutating or safely idempotent write steps; mutation paths require explicit dedupe controls.</p></article>
+          <article class="failure-card"><h3>Circuit breakers</h3><p>Protect downstream ledger dependencies and stop failure cascades from turning transient issues into widespread backlogs.</p></article>
+          <article class="failure-card"><h3>Dead-letter queues</h3><p>Malformed or nonreconcilable events are quarantined with full context for operator triage.</p></article>
+          <article class="failure-card"><h3>Disaster recovery</h3><p>Combine replicated event logs, database backups, and reconciliation replay workflows to rebuild correct state.</p></article>
+          <article class="failure-card"><h3>Monitoring</h3><p>Alert on queue lag, duplicate rates, reconciliation breaks, ledger write latency, and exception aging.</p></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Repository</p>
+          <h2>Implementation status.</h2>
+        </div>
+        <p class="case-text">
+          This case study is derived from real transaction and reconciliation patterns from my financial systems experience.
+          I have not linked a public repository here because the exact implementation is based on private production-style workflows rather than an open-source codebase.
+        </p>
+      </section>
+
+      <footer class="site-footer">
+        <p>&copy; 2026 Jeshwin William James</p>
+        <a href="../../index.html#system-design-library">Back to Library</a>
+      </footer>
+    </main>
+  </body>
+</html>

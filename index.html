@@ -41,7 +41,8 @@
       <nav class="top-nav" aria-label="Primary">
         <a href="#experience">Experience</a>
         <a href="#projects">Projects</a>
-        <a href="#publication">Research</a>
+        <a href="#system-design-library">System Design</a>
+        <a href="#publication">Publication</a>
         <a href="#contact">Contact</a>
       </nav>
     </header>
@@ -62,7 +63,7 @@
           <div class="hero-actions">
             <button class="button button-primary" type="button" data-resume-open>View Resume</button>
             <a class="button button-secondary" href="https://github.com/jeshwinwilliam" target="_blank" rel="noreferrer">Open GitHub</a>
-            <a class="button button-secondary" href="#publication">Open Research</a>
+            <a class="button button-secondary" href="#publication">Open Publication</a>
             <a class="button button-secondary" href="https://www.linkedin.com/in/jeshwin-william-james-33a83b1a9/" target="_blank" rel="noreferrer">Open LinkedIn</a>
             <a class="button button-secondary" href="#contact">Contact</a>
           </div>
@@ -121,7 +122,7 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
             <p>Read the current resume inside the site viewer with recent experience and technical strengths.</p>
           </button>
           <a class="link-card" href="https://link.springer.com/chapter/10.1007/978-981-19-5443-6_16" target="_blank" rel="noreferrer">
-            <span class="link-tag">Research</span>
+            <span class="link-tag">Publication</span>
             <strong>Springer Publication</strong>
             <p>Published work on IMEI-based mobile payment security.</p>
           </a>
@@ -131,9 +132,9 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
             <p>Reach out for roles, collaborations, speaking, or technical consulting.</p>
           </a>
           <a class="link-card" href="#publication">
-            <span class="link-tag">Research</span>
+            <span class="link-tag">Paper</span>
             <strong>Publication Details</strong>
-            <p>Full citation, Springer record, and publication context.</p>
+            <p>Full citation, Springer record, publication context, and research impact.</p>
           </a>
         </div>
       </section>
@@ -316,24 +317,30 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
               <li>Persistent review history and failure recovery</li>
               <li>Docker-based local deployment and metrics hooks</li>
             </ul>
+            <div class="project-actions">
+              <a class="button button-secondary button-small" href="./system-design/pr-intelligence/index.html">View System Design</a>
+            </div>
           </article>
           <article class="project-card">
             <div class="project-top">
               <span class="project-index">02</span>
               <a href="https://github.com/jeshwinwilliam/distributed-event-processing-system" target="_blank" rel="noreferrer">Open Repo</a>
             </div>
-            <h3>Distributed Event Processing System</h3>
+            <h3>Distributed Order Processing Platform</h3>
             <p>
-              Real-time event-processing platform built around Kafka, resilient
-              consumers, dead-letter handling, and horizontally scalable services.
+              Order, payment, inventory, and logistics workflow architecture with Kafka-driven orchestration,
+              idempotent processing, and resilient failure recovery across service boundaries.
             </p>
             <p class="project-label">Engineering Highlights</p>
             <ul class="mini-points">
-              <li>Retry handling and DLQ workflow</li>
-              <li>REST APIs and monitoring hooks</li>
-              <li>Containerized deployment model</li>
+              <li>Saga-style order workflow</li>
+              <li>Retry handling and dead-letter isolation</li>
+              <li>API-first ingestion and monitoring hooks</li>
               <li>Horizontally scalable consumer design</li>
             </ul>
+            <div class="project-actions">
+              <a class="button button-secondary button-small" href="./system-design/order-processing/index.html">View System Design</a>
+            </div>
           </article>
           <article class="project-card">
             <div class="project-top">
@@ -352,6 +359,93 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
               <li>Payment security use case</li>
               <li>Publication-connected project story</li>
             </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-shell system-design-library" id="system-design-library">
+        <div class="section-heading">
+          <p class="eyebrow">System Design Library</p>
+          <h2>Flagship architecture case studies grounded in my own platform work.</h2>
+          <p class="section-intro">
+            Each case study focuses on requirements, event flow, key decisions, trade-offs, and failure handling
+            instead of generic interview diagrams. This is the strongest way to show how I think about backend systems at scale.
+          </p>
+        </div>
+        <div class="case-study-grid">
+          <article class="case-study-card">
+            <span class="link-tag">Payments / Kafka</span>
+            <h3>Distributed Order Processing Platform</h3>
+            <p>
+              API gateway, order service, payment, inventory, and logistics workflows connected by Kafka with
+              idempotency, retries, and saga-style recovery.
+            </p>
+            <div class="mini-case-diagram">
+              <div class="mini-case-row">
+                <span>Client</span><i></i><span>Gateway</span><i></i><span>Order Service</span>
+              </div>
+              <div class="mini-case-row">
+                <span>Kafka</span><i></i><span>Payment</span><i></i><span>Inventory</span><i></i><span>Logistics</span>
+              </div>
+            </div>
+            <ul class="mini-points">
+              <li>50,000 events per minute design assumption</li>
+              <li>No duplicate payment execution</li>
+              <li>Replayable event flow and audit trail</li>
+            </ul>
+            <div class="project-actions">
+              <a class="button button-secondary button-small" href="./system-design/order-processing/index.html">View System Design</a>
+              <a class="button button-secondary button-small" href="https://github.com/jeshwinwilliam/distributed-event-processing-system" target="_blank" rel="noreferrer">Reference Repo</a>
+            </div>
+          </article>
+          <article class="case-study-card">
+            <span class="link-tag">Developer Platform</span>
+            <h3>PR Intelligence Platform</h3>
+            <p>
+              GitHub webhook ingestion, Kafka queues, analysis workers, AI-assisted review services, and resilient result delivery
+              with observability and rate limiting.
+            </p>
+            <div class="mini-case-diagram">
+              <div class="mini-case-row">
+                <span>GitHub</span><i></i><span>Webhook API</span><i></i><span>Kafka</span>
+              </div>
+              <div class="mini-case-row">
+                <span>Workers</span><i></i><span>AI Service</span><i></i><span>Review Store</span>
+              </div>
+            </div>
+            <ul class="mini-points">
+              <li>Webhook burst absorption</li>
+              <li>Failure-aware async review flow</li>
+              <li>Rate limiting and worker isolation</li>
+            </ul>
+            <div class="project-actions">
+              <a class="button button-secondary button-small" href="./system-design/pr-intelligence/index.html">View System Design</a>
+              <a class="button button-secondary button-small" href="https://github.com/jeshwinwilliam/pr-intelligence-platform-jeshwin" target="_blank" rel="noreferrer">Open Repo</a>
+            </div>
+          </article>
+          <article class="case-study-card">
+            <span class="link-tag">Financial Systems</span>
+            <h3>Real-Time Transaction Reconciliation System</h3>
+            <p>
+              Trade ingestion, validation, ledger updates, duplicate detection, and reconciliation workflows designed
+              for high-integrity financial operations.
+            </p>
+            <div class="mini-case-diagram">
+              <div class="mini-case-row">
+                <span>Trades</span><i></i><span>Validation</span><i></i><span>Kafka</span>
+              </div>
+              <div class="mini-case-row">
+                <span>Ledger</span><i></i><span>Reconciliation</span><i></i><span>Ops</span>
+              </div>
+            </div>
+            <ul class="mini-points">
+              <li>Low-latency reconciliation path</li>
+              <li>Consistency versus throughput trade-offs</li>
+              <li>Partitioned processing and auditability</li>
+            </ul>
+            <div class="project-actions">
+              <a class="button button-secondary button-small" href="./system-design/reconciliation/index.html">View System Design</a>
+            </div>
           </article>
         </div>
       </section>
