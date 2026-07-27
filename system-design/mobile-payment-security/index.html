@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mobile Payment Security System | Jeshwin William James</title>
+    <meta
+      name="description"
+      content="System design case study for the Mobile Payment Security System by Jeshwin William James."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../styles.css" />
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="../../index.html#top">
+        <span class="brand-copy">
+          <strong>Jeshwin William James</strong>
+          <span>jeshwin.com</span>
+          <small>Systems, scale, signal.</small>
+        </span>
+      </a>
+      <nav class="top-nav" aria-label="Primary">
+        <a href="../../index.html#projects">Projects</a>
+        <a href="../../index.html#system-design-library">System Design</a>
+        <a href="../../index.html#publication">Publication</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero section-shell case-hero">
+        <div class="hero-copy">
+          <p class="eyebrow">System Design Case Study</p>
+          <h1>
+            Mobile Payment Security System
+            <span>for device-aware authentication and fraud-resistant payment approval.</span>
+          </h1>
+          <p class="hero-text">
+            This case study translates the IMEI-verification research idea into a production-style payment security architecture
+            covering mobile onboarding, device trust evaluation, authentication, payment authorization, and fraud-aware recovery.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="https://github.com/jeshwinwilliam/mobile-payment-security-system" target="_blank" rel="noreferrer">Open Repo</a>
+            <a class="button button-secondary" href="../../index.html#system-design-library">Back to System Design</a>
+          </div>
+        </div>
+        <aside class="hero-panel">
+          <div class="panel-card pulse-card">
+            <p class="panel-label">Key Assumptions</p>
+            <div class="signal-grid">
+              <article>
+                <span class="signal-value">25k/min</span>
+                <span class="signal-key">payment auth requests, design assumption</span>
+              </article>
+              <article>
+                <span class="signal-value">&lt; 250ms</span>
+                <span class="signal-key">risk decision p95, design assumption</span>
+              </article>
+              <article>
+                <span class="signal-value">Zero trust</span>
+                <span class="signal-key">unknown devices require verification</span>
+              </article>
+              <article>
+                <span class="signal-value">Audit-safe</span>
+                <span class="signal-key">every auth decision is reviewable</span>
+              </article>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Problem</p>
+          <h2>Approve mobile payments quickly while detecting risky or spoofed devices before money moves.</h2>
+        </div>
+        <p class="case-text">
+          A payment platform needs to strengthen mobile transaction security by validating device identity, correlating IMEI data,
+          applying contextual risk checks, and rejecting suspicious payment requests without creating too much friction for legitimate users.
+        </p>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Requirements</p>
+          <h2>Security, latency, and auditability all need to hold at the same time.</h2>
+        </div>
+        <div class="requirement-grid">
+          <article class="requirement-card"><strong>25,000 requests per minute</strong><span>Design assumption for mobile payment authorization traffic.</span></article>
+          <article class="requirement-card"><strong>p95 below 250 ms</strong><span>Design assumption for risk evaluation and auth gating.</span></article>
+          <article class="requirement-card"><strong>No duplicate payment approval</strong><span>Idempotency on payment intent and auth challenge response.</span></article>
+          <article class="requirement-card"><strong>Strong device verification</strong><span>IMEI and device fingerprint checks must influence trust decisions.</span></article>
+          <article class="requirement-card"><strong>High availability</strong><span>Risk and auth services cannot become a single point of payment failure.</span></article>
+          <article class="requirement-card"><strong>Forensic audit trail</strong><span>Every trust score, challenge, and approval decision must be reconstructable.</span></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Architecture Diagram</p>
+          <h2>Mobile request to trust verification to payment decision and storage.</h2>
+        </div>
+        <div class="mermaid-shell">
+          <div class="mermaid mermaid-diagram">
+flowchart TB
+    App["Mobile App"] --> Gateway["API Gateway"]
+    Gateway --> Auth["Authentication Service"]
+    Auth --> Risk["Risk Engine"]
+
+    subgraph Trust["Device Trust Layer"]
+        IMEI["IMEI Verification"]
+        Fingerprint["Device Fingerprint Check"]
+        DeviceStore[("Trusted Device Store")]
+    end
+
+    Risk --> IMEI
+    Risk --> Fingerprint
+    IMEI --> DeviceStore
+    Fingerprint --> DeviceStore
+
+    subgraph Payments["Payment Control Layer"]
+        Challenge["Challenge / OTP Service"]
+        Decision["Payment Decision Service"]
+        Fraud["Fraud Alert Service"]
+    end
+
+    Risk --> Challenge
+    Risk --> Decision
+    Decision --> Fraud
+
+    subgraph Data["Persistence and Audit"]
+        PaymentStore[("Payment Store")]
+        Audit[("Audit Log")]
+        Cache[("Redis Session Cache")]
+    end
+
+    Auth --> Cache
+    Decision --> PaymentStore
+    Challenge --> Audit
+    Decision --> Audit
+    Fraud --> Audit
+
+    subgraph Recovery["Recovery and Monitoring"]
+        Retry["Retry Queue"]
+        DLQ["Security Review Queue"]
+        Metrics["Metrics / Alerts / Logs"]
+    end
+
+    Decision -. transient dependency failure .-> Retry
+    Fraud -. suspicious payload .-> DLQ
+    Auth --> Metrics
+    Risk --> Metrics
+    Decision --> Metrics
+          </div>
+          <div class="flow-strip">
+            <span>Trust Flow: Mobile App -> Auth Service -> Risk Engine -> IMEI and device verification</span>
+            <span>Decision Flow: Risk outcome -> Challenge or Payment Decision -> Audit and fraud alerting</span>
+            <span>Recovery Flow: failures isolate into retry and security review queues with full observability</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Cloud-Native Deployment Architecture</p>
+          <h2>How security services, device trust, storage, and monitoring fit together in production.</h2>
+        </div>
+        <div class="mermaid-shell">
+          <div class="mermaid mermaid-diagram">
+flowchart LR
+    Mobile["Mobile Clients"] --> Ingress["Ingress / WAF"]
+    Ingress --> K8s
+
+    subgraph K8s["Kubernetes Cluster"]
+        GatewayPods["Gateway Pods"]
+        AuthPods["Auth Pods"]
+        RiskPods["Risk Engine Pods"]
+        DecisionPods["Decision Service Pods"]
+    end
+
+    GatewayPods --> AuthPods
+    AuthPods --> RiskPods
+    RiskPods --> DecisionPods
+
+    subgraph Platform["Platform Dependencies"]
+        Kafka[("Kafka / Retry Topics")]
+        Postgres[("PostgreSQL")]
+        Redis[("Redis")]
+        DeviceDB[("Trusted Device Store")]
+        Prom["Prometheus"]
+        Graf["Grafana"]
+    end
+
+    RiskPods --> DeviceDB
+    DecisionPods --> Postgres
+    AuthPods --> Redis
+    DecisionPods --> Kafka
+    RiskPods --> Kafka
+    AuthPods --> Prom
+    RiskPods --> Prom
+    DecisionPods --> Prom
+    Prom --> Graf
+          </div>
+          <div class="flow-strip">
+            <span>Scale Unit: gateway, auth, risk, and decision services scale independently by request pressure</span>
+            <span>Persistence: trusted device state and payment history live outside stateless compute</span>
+            <span>Monitoring: auth failures, trust mismatches, challenge rates, and approval latency drive alerts</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Key Decisions</p>
+          <h2>Device trust signals are only useful when they drive clear payment-control choices.</h2>
+        </div>
+        <div class="decision-grid">
+          <article class="decision-card"><h3>Why verify IMEI?</h3><p>IMEI gives an additional hardware-linked trust signal that helps separate known devices from suspicious or freshly spoofed environments.</p></article>
+          <article class="decision-card"><h3>Why combine IMEI with fingerprinting?</h3><p>IMEI alone can be insufficient or unavailable, so pairing it with device fingerprints improves resilience against spoofing and reuse attacks.</p></article>
+          <article class="decision-card"><h3>Why Redis here?</h3><p>Session state, recent device challenges, and short-lived auth decisions benefit from low-latency cache access and expiration control.</p></article>
+          <article class="decision-card"><h3>How are duplicates handled?</h3><p>Payment intents and challenge responses carry idempotency references so retries do not execute or approve the same payment twice.</p></article>
+          <article class="decision-card"><h3>What happens on high risk?</h3><p>High-risk requests trigger stepped-up verification, delayed approval, or security review rather than immediate payment execution.</p></article>
+          <article class="decision-card"><h3>How is the system monitored?</h3><p>Track challenge rates, trust mismatches, approval latency, false-positive risk spikes, and fraud-review backlog in near real time.</p></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Trade-Offs</p>
+          <h2>More device verification improves trust, but it adds friction and operational complexity.</h2>
+        </div>
+        <div class="tradeoff-grid">
+          <article class="tradeoff-card"><h3>IMEI-driven trust</h3><p>Improves security posture, but increases dependency on device identifiers that may not always be accessible or stable across platforms.</p></article>
+          <article class="tradeoff-card"><h3>Step-up authentication</h3><p>Reduces fraud risk, but can increase user friction and drop-off for borderline or false-positive cases.</p></article>
+          <article class="tradeoff-card"><h3>Centralized risk scoring</h3><p>Improves decision consistency, but introduces latency sensitivity and a critical dependency path for payment approval.</p></article>
+          <article class="tradeoff-card"><h3>Detailed audit logging</h3><p>Improves post-incident investigation and compliance, but expands storage cost and data governance responsibilities.</p></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Scaling And Failure Handling</p>
+          <h2>Security control paths must fail safely, not just quickly.</h2>
+        </div>
+        <div class="failure-grid">
+          <article class="failure-card"><h3>Horizontal scaling</h3><p>Gateway, auth, and risk services scale independently so traffic bursts do not overload payment decisioning.</p></article>
+          <article class="failure-card"><h3>Retries</h3><p>Only retry safe downstream checks and asynchronous security notifications; payment approvals remain guarded by idempotency and state checks.</p></article>
+          <article class="failure-card"><h3>Circuit breakers</h3><p>If noncritical trust enrichments degrade, the system can fall back to stricter challenge paths instead of blindly approving requests.</p></article>
+          <article class="failure-card"><h3>Dead-letter handling</h3><p>Malformed device payloads or suspicious events route to a security review queue for analyst investigation.</p></article>
+          <article class="failure-card"><h3>Disaster recovery</h3><p>Trusted device data, payment history, and audit trails replicate so fraud analysis and customer recovery remain possible after incidents.</p></article>
+          <article class="failure-card"><h3>Monitoring</h3><p>Watch trust-score drift, challenge conversion, risk-engine latency, device mismatches, and false-positive alert volume.</p></article>
+        </div>
+      </section>
+
+      <section class="section-shell case-study-shell">
+        <div class="section-heading">
+          <p class="eyebrow">Repository</p>
+          <h2>Actual implementation link.</h2>
+        </div>
+        <p class="case-text">
+          Repository:
+          <a href="https://github.com/jeshwinwilliam/mobile-payment-security-system" target="_blank" rel="noreferrer">jeshwinwilliam/mobile-payment-security-system</a>.
+          This case study is aligned with the research-backed payment security concept and expresses it as a production-style architecture narrative.
+        </p>
+      </section>
+
+      <footer class="site-footer">
+        <p>&copy; 2026 Jeshwin William James</p>
+        <a href="../../index.html#system-design-library">Back to Library</a>
+      </footer>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <script>
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: "base",
+        securityLevel: "loose",
+        themeVariables: {
+          background: "#0c121d",
+          primaryColor: "#191f2e",
+          primaryTextColor: "#eff4ff",
+          primaryBorderColor: "#8ea0c9",
+          lineColor: "#b6c4e2",
+          secondaryColor: "#141b28",
+          tertiaryColor: "#101722",
+          fontFamily: "\"IBM Plex Mono\", monospace"
+        }
+      });
+    </script>
+  </body>
+</html>
