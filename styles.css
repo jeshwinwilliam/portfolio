@@ -138,8 +138,8 @@ a {
 }
 
 .section-shell {
-  margin-bottom: 28px;
-  padding: 24px;
+  margin-bottom: 34px;
+  padding: 28px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: linear-gradient(180deg, rgba(7, 11, 24, 0.9), rgba(8, 14, 29, 0.72));
@@ -182,9 +182,9 @@ h1 span {
 }
 
 .hero-text {
-  max-width: 56ch;
+  max-width: 50ch;
   font-size: 1.08rem;
-  line-height: 1.7;
+  line-height: 1.82;
   margin: 24px 0 0;
 }
 
@@ -192,7 +192,7 @@ h1 span {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
-  margin-top: 30px;
+  margin-top: 34px;
 }
 
 .button {
@@ -331,7 +331,17 @@ pre {
 }
 
 .section-heading {
-  margin-bottom: 24px;
+  margin-bottom: 30px;
+}
+
+.stack-card p,
+.board-card p,
+.timeline-body p,
+.project-card p,
+.publication-card p,
+.credential-card p,
+.contact-copy p {
+  line-height: 1.78;
 }
 
 .link-grid,
@@ -478,6 +488,16 @@ pre {
   font-family: "IBM Plex Mono", monospace;
 }
 
+.project-label,
+.publication-meta {
+  margin-top: 16px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
 .publication-card {
   padding: 28px;
   display: grid;
@@ -522,7 +542,7 @@ pre {
 .contact-lines {
   display: grid;
   gap: 10px;
-  margin-top: 22px;
+  margin-top: 26px;
 }
 
 .contact-form {
@@ -593,7 +613,7 @@ textarea::placeholder {
 
   .section-shell {
     width: min(100vw - 20px, 1180px);
-    padding: 18px;
+    padding: 20px;
   }
 
   .signal-grid {
