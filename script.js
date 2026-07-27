@@ -5,7 +5,7 @@ async function loadViewCount() {
     return;
   }
 
-  const namespace = "jeshwin.engineer";
+  const namespace = "jeshwin.com";
   const key = "portfolio-home";
 
   try {

@@ -1,4 +1,4 @@
-# jeshwin.engineer
+# jeshwin.com
 
 Static personal website for Jeshwin William James.
 
@@ -6,7 +6,7 @@ Static personal website for Jeshwin William James.
 
 ```mermaid
 flowchart TB
-    User["Visitor Browser"] --> DNS["DNS Resolution<br/>jeshwin.engineer"]
+    User["Visitor Browser"] --> DNS["DNS Resolution<br/>jeshwin.com"]
     DNS --> Edge["CDN / Edge Cache<br/>Global static delivery"]
     Edge --> App["Portfolio Application Shell<br/>index.html"]
 
@@ -68,7 +68,7 @@ flowchart TB
 
     subgraph Domain["Domain and Routing Layer"]
         Registrar["Domain Registrar"] --> DNS["DNS Records"]
-        DNS --> DomainName["jeshwin.engineer"]
+        DNS --> DomainName["jeshwin.com"]
         DomainName --> EdgeNetwork
     end
 
@@ -133,4 +133,4 @@ This is a static site and can be deployed cleanly to:
 - Vercel
 - GitHub Pages
 
-Point the custom domain `jeshwin.engineer` to the hosting provider and enable HTTPS.
+Point the custom domain `jeshwin.com` to the hosting provider and enable HTTPS.
