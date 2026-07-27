@@ -98,7 +98,6 @@ a {
 .brand-copy small,
 .top-nav a,
 .hero-text,
-.manifesto-card p,
 .stack-card p,
 .board-card p,
 .timeline-body p,
@@ -210,7 +209,6 @@ h1 span {
 .link-card:hover,
 .project-card:hover,
 .stack-card:hover,
-.manifesto-card:hover,
 .board-card:hover,
 .credential-card:hover {
   transform: translateY(-3px);
@@ -232,7 +230,6 @@ h1 span {
 
 .panel-card,
 .terminal-card,
-.manifesto-card,
 .link-card,
 .stack-card,
 .board-card,
@@ -273,6 +270,7 @@ h1 span {
   display: block;
   font-size: 1.5rem;
   margin-bottom: 5px;
+  text-transform: uppercase;
 }
 
 .terminal-card {
@@ -313,7 +311,6 @@ pre {
   color: #d9f8ff;
 }
 
-.manifesto-grid,
 .architecture-board,
 .credentials-grid,
 .contact-panel {
@@ -321,11 +318,6 @@ pre {
   gap: 20px;
 }
 
-.manifesto-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.manifesto-card,
 .stack-card,
 .board-card,
 .project-card,
@@ -333,7 +325,6 @@ pre {
   padding: 24px;
 }
 
-.manifesto-card h2,
 .section-heading h2 {
   font-size: clamp(1.55rem, 3vw, 2.6rem);
   margin-bottom: 12px;
@@ -354,6 +345,10 @@ pre {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.link-section {
+  padding-top: 18px;
+}
+
 .link-card {
   padding: 22px;
   display: flex;
@@ -365,7 +360,6 @@ pre {
 .link-card:hover,
 .project-card:hover,
 .stack-card:hover,
-.manifesto-card:hover,
 .board-card:hover,
 .credential-card:hover {
   border-color: var(--line-strong);
@@ -490,6 +484,11 @@ pre {
   gap: 24px;
 }
 
+.citation-line {
+  margin-top: 14px;
+  line-height: 1.7;
+}
+
 .publication-stats {
   display: flex;
   gap: 16px;
@@ -507,6 +506,12 @@ pre {
 .publication-stats strong {
   display: block;
   font-size: 1.4rem;
+}
+
+.publication-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
 }
 
 .contact-panel {
@@ -555,7 +560,6 @@ textarea::placeholder {
 
 @media (max-width: 1024px) {
   .hero,
-  .manifesto-grid,
   .link-grid,
   .stack-grid,
   .architecture-board,

@@ -39,9 +39,9 @@
         </span>
       </a>
       <nav class="top-nav" aria-label="Primary">
-        <a href="#architecture">Architecture</a>
+        <a href="#experience">Experience</a>
         <a href="#projects">Projects</a>
-        <a href="#publication">Publication</a>
+        <a href="#publication">Research</a>
         <a href="#contact">Contact</a>
       </nav>
     </header>
@@ -51,38 +51,38 @@
         <div class="hero-copy">
           <p class="eyebrow">Distributed Systems Engineer</p>
           <h1>
-            I build backend systems that stay fast,
-            <span>fault-tolerant, observable, and production-ready.</span>
+            I build reliable distributed systems
+            <span>for high-throughput, production-critical workloads.</span>
           </h1>
           <p class="hero-text">
-            Jeshwin William James is a software engineer focused on event-driven
-            microservices, low-latency transaction platforms, cloud-native
-            delivery, and system design that stands up under real traffic.
+            Java, Spring Boot, Kafka, cloud-native infrastructure, and
+            performance engineering for event-driven services, financial
+            systems, and production platforms that need to stay stable under load.
           </p>
           <div class="hero-actions">
             <a class="button button-primary" href="./assets/Jeshwin-William-James-Resume.pdf" target="_blank" rel="noreferrer">Open Resume</a>
-            <a class="button button-secondary" href="#link-grid">Open Link Hub</a>
+            <a class="button button-secondary" href="https://www.linkedin.com/in/jeshwin-william-james-33a83b1a9/" target="_blank" rel="noreferrer">Open LinkedIn</a>
           </div>
         </div>
         <aside class="hero-panel">
           <div class="panel-card pulse-card">
-            <p class="panel-label">Live Profile Signal</p>
+            <p class="panel-label">Selected Proof Points</p>
             <div class="signal-grid">
               <article>
                 <span class="signal-value">3+ yrs</span>
-                <span class="signal-key">engineering impact</span>
+                <span class="signal-key">software engineering</span>
               </article>
               <article>
-                <span class="signal-value">37</span>
-                <span class="signal-key">public repositories</span>
+                <span class="signal-value">1</span>
+                <span class="signal-key">peer-reviewed Springer publication</span>
               </article>
               <article>
-                <span class="signal-value">1120+</span>
-                <span class="signal-key">paper accesses</span>
+                <span class="signal-value">AWS</span>
+                <span class="signal-key">solutions architect associate</span>
               </article>
               <article>
-                <span class="signal-value" id="view-count">...</span>
-                <span class="signal-key">portfolio views</span>
+                <span class="signal-value">Kafka</span>
+                <span class="signal-key">event-driven production systems</span>
               </article>
             </div>
           </div>
@@ -100,32 +100,7 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
         </aside>
       </section>
 
-      <section class="section-shell manifesto-grid">
-        <article class="manifesto-card">
-          <p class="eyebrow">Why This Site Exists</p>
-          <h2>Built to work as portfolio, recruiter landing page, and link tree.</h2>
-          <p>
-            This is a single place to review production experience, architecture
-            thinking, technical range, published work, and verified public
-            links without the usual portfolio clutter.
-          </p>
-        </article>
-        <article class="manifesto-card">
-          <p class="eyebrow">O-1 Positioning</p>
-          <h2>Clear evidence of engineering depth, authorship, and public work.</h2>
-          <p>
-            The structure highlights measurable delivery, advanced systems
-            thinking, publication history, certifications, and public artifacts
-            that help support a stronger technical narrative.
-          </p>
-        </article>
-      </section>
-
       <section class="section-shell link-section" id="link-grid">
-        <div class="section-heading">
-          <p class="eyebrow">Link Hub</p>
-          <h2>Fast access to every important proof point.</h2>
-        </div>
         <div class="link-grid">
           <a class="link-card" href="https://github.com/jeshwinwilliam" target="_blank" rel="noreferrer">
             <span class="link-tag">Code</span>
@@ -152,10 +127,10 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
             <strong>Email</strong>
             <p>Reach out for roles, collaborations, speaking, or technical consulting.</p>
           </a>
-          <a class="link-card" href="tel:+15722761916">
-            <span class="link-tag">Contact</span>
-            <strong>Call</strong>
-            <p>Direct contact for recruiters, founders, and professional opportunities.</p>
+          <a class="link-card" href="#publication">
+            <span class="link-tag">Research</span>
+            <strong>Publication Details</strong>
+            <p>Full citation, Springer record, and publication context.</p>
           </a>
         </div>
       </section>
@@ -187,34 +162,35 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
 
       <section class="section-shell architecture-section" id="architecture">
         <div class="section-heading">
-          <p class="eyebrow">System Design</p>
-          <h2>Architecture is part of the portfolio, not just the background.</h2>
+          <p class="eyebrow">Architecture Case Study</p>
+          <h2>Recovery paths, event flow, and failure handling in distributed workloads.</h2>
         </div>
         <div class="architecture-board">
           <div class="board-column">
             <article class="board-card">
-              <h3>Distributed Event Processing Pattern</h3>
+              <h3>Distributed Event Processing Recovery Workflow</h3>
               <p>
-                A reference pattern for resilient event ingestion, decoupled
-                processing, reliable retries, and production observability.
+                A generalized Kafka-driven recovery pattern based on the event
+                processing platform work: ingestion, fan-out, retry isolation,
+                dead-letter handling, and operational visibility.
               </p>
               <div class="diagram">
                 <div class="diagram-row">
-                  <span>User Apps</span>
+                  <span>Producer APIs</span>
                   <i></i>
-                  <span>API Gateway</span>
+                  <span>Ingress Service</span>
                 </div>
                 <div class="diagram-row">
-                  <span>Order Service</span>
+                  <span>Kafka Topics</span>
                   <i></i>
-                  <span>Kafka Event Bus</span>
+                  <span>Consumer Group</span>
                   <i></i>
-                  <span>Consumers</span>
+                  <span>Workflow Services</span>
                 </div>
                 <div class="diagram-row">
                   <span>PostgreSQL</span>
                   <i></i>
-                  <span>Redis</span>
+                  <span>Retry Queue</span>
                   <i></i>
                   <span>Dead Letter Queue</span>
                 </div>
@@ -230,44 +206,44 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
           </div>
           <div class="board-column">
             <article class="board-card deployment-card">
-              <h3>Deployment Creation Diagram</h3>
+              <h3>PR Intelligence Platform Review Flow</h3>
               <p>
-                A clean deployment story for <code>jeshwin.engineer</code> that
-                stays understandable for both technical and non-technical viewers.
+                Event-driven review orchestration from pull-request ingestion
+                through analysis, persistence, and resilient result delivery.
               </p>
               <ol class="deploy-flow">
                 <li>
-                  <strong>Source Layer</strong>
-                  Portfolio code lives in GitHub with versioned static assets and resume artifacts.
+                  <strong>Ingestion</strong>
+                  Pull request metadata enters a Spring Boot API and is persisted before dispatch.
                 </li>
                 <li>
-                  <strong>Delivery Layer</strong>
-                  CI publishes a static build to a hosting provider with HTTPS enabled for the `.engineer` domain.
+                  <strong>Dispatch</strong>
+                  Kafka events trigger asynchronous review jobs without blocking the intake path.
                 </li>
                 <li>
-                  <strong>DNS Layer</strong>
-                  `jeshwin.engineer` points to the deployed edge endpoint through managed DNS records.
+                  <strong>Analysis</strong>
+                  Rule engines and AI-assisted analyzers produce findings, recommendations, and status changes.
                 </li>
                 <li>
-                  <strong>Experience Layer</strong>
-                  Visitors load a fast dark-mode site with external links, analytics counter, and downloadable resume.
+                  <strong>Resilience</strong>
+                  Failed jobs are retried with status tracking, while review history remains queryable through APIs.
                 </li>
               </ol>
               <div class="deploy-visual">
-                <span>GitHub</span>
+                <span>PR Webhook</span>
                 <b></b>
-                <span>CI/CD</span>
+                <span>Review API</span>
                 <b></b>
-                <span>Edge Hosting</span>
+                <span>Kafka</span>
                 <b></b>
-                <span>jeshwin.engineer</span>
+                <span>Review Findings</span>
               </div>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="section-shell experience-section">
+      <section class="section-shell experience-section" id="experience">
         <div class="section-heading">
           <p class="eyebrow">Experience</p>
           <h2>Built for scale in financial systems and high-traffic commerce.</h2>
@@ -333,8 +309,8 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
             <ul class="mini-points">
               <li>Spring Boot microservices</li>
               <li>Kafka-based orchestration</li>
-              <li>10,000+ PR events/day design target</li>
-              <li>65% faster review turnaround goal</li>
+              <li>Persistent review history and failure recovery</li>
+              <li>Docker-based local deployment and metrics hooks</li>
             </ul>
           </article>
           <article class="project-card">
@@ -348,10 +324,10 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
               consumers, dead-letter handling, and horizontally scalable services.
             </p>
             <ul class="mini-points">
-              <li>50,000+ events/day design target</li>
-              <li>Retry and DLQ flow</li>
+              <li>Retry handling and DLQ workflow</li>
               <li>REST APIs and monitoring hooks</li>
               <li>Containerized deployment model</li>
+              <li>Horizontally scalable consumer design</li>
             </ul>
           </article>
           <article class="project-card">
@@ -384,9 +360,15 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
             <span class="paper-tag">Springer | First online: January 1, 2023</span>
             <h3>Improved Security on Mobile Payments Using IMEI Verification</h3>
             <p>
-              Conference paper published in <em>Sentiment Analysis and Deep Learning</em>,
-              exploring a stronger mobile payment security model centered around
-              IMEI-based device verification.
+              Peer-reviewed conference paper published in Springer's
+              <em>Advances in Intelligent Systems and Computing</em> proceedings
+              for ICSADL 2022, focused on a stronger mobile payment security
+              model centered around IMEI-based device verification.
+            </p>
+            <p class="citation-line">
+              W. Jeshwin et al., “Improved Security on Mobile Payments Using IMEI
+              Verification,” <em>Sentiment Analysis and Deep Learning</em>,
+              Springer, 2023, pp. 183-193.
             </p>
           </div>
           <div class="publication-stats">
@@ -403,7 +385,10 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
               <span>pages</span>
             </article>
           </div>
-          <a class="button button-primary" href="https://link.springer.com/chapter/10.1007/978-981-19-5443-6_16" target="_blank" rel="noreferrer">Read Publication</a>
+          <div class="publication-actions">
+            <a class="button button-primary" href="https://link.springer.com/chapter/10.1007/978-981-19-5443-6_16" target="_blank" rel="noreferrer">View on Springer</a>
+            <a class="button button-secondary" href="https://doi.org/10.1007/978-981-19-5443-6_16" target="_blank" rel="noreferrer">View DOI</a>
+          </div>
         </article>
       </section>
 
@@ -431,20 +416,20 @@ research  = "Improved Security on Mobile Payments Using IMEI Verification"</code
       <section class="section-shell contact-section" id="contact">
         <div class="section-heading">
           <p class="eyebrow">Contact</p>
-          <h2>Available for backend engineering, platform roles, and serious systems work.</h2>
+          <h2>Open to backend, distributed systems, and platform engineering opportunities.</h2>
         </div>
         <div class="contact-panel">
           <div class="contact-copy">
             <p>
-              If you are hiring for distributed systems, event-driven platforms,
-              backend engineering, cloud-native architecture, or technical product
-              builds, this site is designed to give you everything you need fast.
+              I am especially interested in high-throughput services,
+              event-driven architecture, cloud infrastructure, and developer
+              platforms where reliability and performance matter.
             </p>
             <div class="contact-lines">
               <a href="mailto:jeshwin.w.james@gmail.com">jeshwin.w.james@gmail.com</a>
-              <a href="tel:+15722761916">+1 (572) 276-1916</a>
               <a href="https://www.linkedin.com/in/jeshwin-william-james-33a83b1a9/" target="_blank" rel="noreferrer">LinkedIn</a>
               <a href="https://github.com/jeshwinwilliam" target="_blank" rel="noreferrer">GitHub</a>
+              <a href="./assets/Jeshwin-William-James-Resume.pdf" target="_blank" rel="noreferrer">Resume</a>
             </div>
           </div>
           <form class="contact-form" action="mailto:jeshwin.w.james@gmail.com" method="post" enctype="text/plain">
