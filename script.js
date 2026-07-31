@@ -7,6 +7,7 @@ const assistantClose = assistantShell?.querySelector(".assistant-close");
 const assistantForm = document.getElementById("assistant-form");
 const assistantInput = document.getElementById("assistant-input");
 const assistantLog = document.getElementById("assistant-log");
+const contactForm = document.getElementById("contact-form");
 
 async function loadViewCount() {
   if (!viewNode) {
@@ -36,18 +37,24 @@ const assistantResponses = [
   {
     match: ["currently working", "current work", "working on", "now", "current focus"],
     answer:
-      "Jeshwin is currently focused on backend and transaction-heavy platform work across distributed services, reconciliation flows, and production-critical system design. The strongest themes are Java, Spring Boot, event-driven processing, Kafka, cloud infrastructure, and making high-volume systems more reliable under failure.",
+      "Jeshwin is currently focused on backend and transaction-heavy platform work across distributed services, reconciliation flows, and production-critical software design. The strongest themes are Java, Spring Boot, Kafka, cloud infrastructure, and turning complex workflows into reliable production systems.",
     action: "experience",
   },
   {
     match: ["role", "roles", "targeting", "job", "opportunity"],
     answer:
-      "Jeshwin is looking for backend, distributed systems, platform engineering, and cloud-native infrastructure roles where reliability, scale, and architecture depth matter. The best fit is a team building production-critical systems with real throughput, failure handling, and long-term ownership.",
+      "Jeshwin is looking for software engineering roles across backend systems, distributed platforms, and AI-enabled products where reliability, scale, and implementation depth matter. The best fit is a team building production software with meaningful technical ownership.",
   },
   {
     match: ["looking for", "what kind of roles", "seeking", "open to", "hiring"],
     answer:
-      "Jeshwin is looking for backend and distributed-systems roles centered on event-driven architecture, platform reliability, cloud-native services, and high-throughput production workloads. He is strongest where system design, implementation depth, and operational resilience all matter together.",
+      "Jeshwin is looking for software engineering roles centered on backend architecture, distributed systems, AI platforms, cloud-native services, and high-impact production workloads. He is strongest where system design, implementation depth, and operational resilience all matter together.",
+  },
+  {
+    match: ["ai platform", "ai platforms", "ai work", "python", "llm", "model"],
+    answer:
+      "Jeshwin’s AI-platform-oriented work is best represented by the PR Intelligence Platform and his Python-based experimentation. The emphasis is on integrating intelligent workflows into real software systems, with orchestration, persistence, observability, and failure-aware design rather than standalone demos.",
+    action: "projects",
   },
   {
     match: ["resume", "cv"],
@@ -82,7 +89,7 @@ const assistantResponses = [
   {
     match: ["how he thinks", "how does", "distributed systems", "thinking", "trade-off", "tradeoffs"],
     answer:
-      "Jeshwin thinks about distributed systems through reliability first: clear service boundaries, idempotency, retry safety, observability, failure isolation, and auditability. The goal is not just making services work on a happy path, but making them explainable, recoverable, and stable under scale and partial failure.",
+      "Jeshwin thinks about software systems through reliability first: clear service boundaries, idempotency, retry safety, observability, failure isolation, and auditability. The goal is not just making services work on a happy path, but making them explainable, recoverable, and stable under scale and partial failure.",
     action: "system-design",
   },
   {
@@ -188,6 +195,24 @@ function handleAssistantQuestion(question) {
   routeAssistantAction(reply.action);
 }
 
+function openGmailCompose(payload = {}) {
+  const params = new URLSearchParams({
+    view: "cm",
+    fs: "1",
+    to: "jeshwin.w.james@gmail.com",
+  });
+
+  if (payload.subject) {
+    params.set("su", payload.subject);
+  }
+
+  if (payload.body) {
+    params.set("body", payload.body);
+  }
+
+  window.open(`https://mail.google.com/mail/?${params.toString()}`, "_blank", "noopener");
+}
+
 function openResumeModal(event) {
   if (event) {
     event.preventDefault();
@@ -260,6 +285,32 @@ if (assistantForm) {
 
     handleAssistantQuestion(assistantInput.value);
     assistantInput.value = "";
+  });
+}
+
+if (contactForm) {
+  contactForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(contactForm);
+    const name = String(formData.get("name") || "").trim();
+    const email = String(formData.get("email") || "").trim();
+    const message = String(formData.get("message") || "").trim();
+
+    const subject = name
+      ? `Portfolio inquiry from ${name}`
+      : "Portfolio inquiry";
+
+    const body = [
+      name ? `Name: ${name}` : "",
+      email ? `Email: ${email}` : "",
+      "",
+      message || "Hello Jeshwin,",
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    openGmailCompose({ subject, body });
   });
 }
 
